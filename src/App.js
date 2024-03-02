@@ -1,16 +1,19 @@
 import React, { useState, useEffect } from 'react';
 import SpeechRecognition, { useSpeechRecognition } from 'react-speech-recognition';
 import OpenAI from 'openai';
+import assistantInstructions from './instructions';
+
 
 const Chatbot = () => {
   const [chatHistory, setChatHistory] = useState([]);
-  const [assistantName] = useState('Anita: Personal Assistance');
+  const [assistantName] = useState('Personal Assistance');
+  const [assistantInstructionsState] = useState(assistantInstructions);
   const [loading, setLoading] = useState(false);
   const [liveTranscript, setLiveTranscript] = useState('');
 
   const { transcript, resetTranscript, browserSupportsSpeechRecognition } = useSpeechRecognition();
   const openai = new OpenAI({
-    apiKey: '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',
+    apiKey: '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',
     dangerouslyAllowBrowser: true,
   });
 
@@ -21,12 +24,12 @@ const Chatbot = () => {
 
   const makeOpenAIRequest = async (userInput) => {
     try {
-      const systemMessage = 'You are Anita. A teacher that teaches coding';
+      const anita = 'Name : Anita, Personal Assistance';
 
       const completion = await openai.chat.completions.create({
         messages: [
-          { role: 'system', content: systemMessage },
-          { role: 'user', content: userInput },
+          { role: 'system', content: anita},
+          { role: 'user', content: assistantInstructionsState },
         ],
         model: 'gpt-3.5-turbo',
       });
@@ -64,7 +67,7 @@ const Chatbot = () => {
     for (let i = 0; i < text.length; i += chunkSize) {
       chunks.push(text.slice(i, i + chunkSize));
     }
-  
+    //
     const speakChunk = (index) => {
       if (index < chunks.length) {
         return new Promise((resolve, reject) => {
