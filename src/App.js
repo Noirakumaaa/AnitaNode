@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import SpeechRecognition, { useSpeechRecognition } from 'react-speech-recognition';
 import OpenAI from 'openai';
 import assistantInstructions from './instructions';
+import systemInstructions from './systemInstructions';
 
 
 const Chatbot = () => {
@@ -24,11 +25,10 @@ const Chatbot = () => {
 
   const makeOpenAIRequest = async (userInput) => {
     try {
-      const anita = 'Name : Anita, Personal Assistance';
 
       const completion = await openai.chat.completions.create({
         messages: [
-          { role: 'system', content: anita},
+          { role: 'system', content: systemInstructions},
           { role: 'user', content: assistantInstructionsState },
         ],
         model: 'gpt-3.5-turbo',
